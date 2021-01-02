@@ -10,6 +10,9 @@ import nmap3
 from datetime import datetime
 from typing import Dict
 
+#Instantiates nmap
+nmap = nmap3.Nmap()
+
 
 def main():
     args: Dict[str, str] = read_args()
@@ -18,9 +21,18 @@ def main():
     print(args["size"])
     print(args["target"])
 
-    #Instantiates nmap
-    nmap = nmap3.Nmap()
+    if args["size"] == 1:
+        print("Small scan")
+        small_scan(args)
+    elif args["size"] == 2:
+        print("Medium scan")
+        medium_scan(args)
+    elif args["size"] == 3:
+        print("Large scan")
+        large_scan(args)
 
+
+def small_scan(args):
     # Scans with nmap for top ports - (ip , top_ports)
     results = nmap.scan_top_ports(args["target"], 10)
 
@@ -30,7 +42,25 @@ def main():
     result_dump1 = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
     result_dump2 = json.dump(os_results, open("nmap_os_detection.json", "w"), indent=4)
 
+def medium_scan(args):
+    # Scans with nmap for top ports - (ip , top_ports)
+    results = nmap.scan_top_ports(args["target"], 1000)
 
+    os_results = nmap.nmap_os_detection(args["target"]) # MOST BE ROOT
+    
+    #temp dump json to file for analysis
+    result_dump1 = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
+    result_dump2 = json.dump(os_results, open("nmap_os_detection.json", "w"), indent=4)
+
+def large_scan(args):
+    # Scans with nmap for top ports - (ip , top_ports)
+    results = nmap.scan_top_ports(args["target"], 65389)
+
+    os_results = nmap.nmap_os_detection(args["target"]) # MOST BE ROOT
+    
+    #temp dump json to file for analysis
+    result_dump1 = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
+    result_dump2 = json.dump(os_results, open("nmap_os_detection.json", "w"), indent=4)
 
 
 def read_args() -> Dict[str, str]:

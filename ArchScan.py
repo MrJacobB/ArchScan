@@ -22,28 +22,15 @@ def main():
     nmap = nmap3.Nmap()
 
     # Scans with nmap for top ports - (ip , top_ports)
-    # results = nmap.scan_top_ports("127.0.0.1", 10)
-    results = nmap.scan_top_ports("192.168.1.1", 10)
-    # Dumps json result to file for manual analyzes
-    result_dump = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
+    results = nmap.scan_top_ports(args["target"], 10)
 
-    # os_results = nmap.nmap_os_detection("127.0.0.1") # MOST BE ROOT
-    # os_results = nmap.nmap_os_detection("192.168.1.1") # MOST BE ROOT
-    # result_dump = json.dump(os_results, open("nmap_os_detection.json", "w"), indent=4)
+    os_results = nmap.nmap_os_detection(args["target"]) # MOST BE ROOT
+    
+    #temp dump json to file for analysis
+    result_dump1 = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
+    result_dump2 = json.dump(os_results, open("nmap_os_detection.json", "w"), indent=4)
 
 
-    # for key, value in results.items():
-    #     print(key, value)
-    #     print("break")
-    #     for key1, value1 in value.items():
-    #         print(key1, value1)
-    # print("break")
-    # print(results)
-
-    # data = json.loads(results.get())
-    # print(data)
-    # print(results.keys())
-    # print(results["127.0.0.1"].items())
 
 
 def read_args() -> Dict[str, str]:

@@ -21,46 +21,37 @@ def main():
     print(args["size"])
     print(args["target"])
 
+    nmap_scan(args)
+
+
+
+def nmap_scan(args):
     if args["size"] == 1:
         print("Small scan")
-        small_scan(args)
+        scanport=10
     elif args["size"] == 2:
+        scanport=1000
         print("Medium scan")
-        medium_scan(args)
     elif args["size"] == 3:
+        scanport=65389
         print("Large scan")
-        large_scan(args)
 
-
-def small_scan(args):
     # Scans with nmap for top ports - (ip , top_ports)
-    results = nmap.scan_top_ports(args["target"], 10)
+    results = nmap.scan_top_ports(args["target"], scanport)
 
     os_results = nmap.nmap_os_detection(args["target"]) # MOST BE ROOT
     
+    service_results = nmap.nmap_version_detection(args["target"]) # MOST BE ROOT
+
+    list_results = nmap.nmap_list_scan(args["target"])
+
     #temp dump json to file for analysis
     result_dump1 = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
     result_dump2 = json.dump(os_results, open("nmap_os_detection.json", "w"), indent=4)
+    result_dump3 = json.dump(service_results, open("nmap_version_detection.json", "w"), indent=4)
+    result_dump4 = json.dump(list_results, open("nmap_list.json", "w"), indent=4)
 
-def medium_scan(args):
-    # Scans with nmap for top ports - (ip , top_ports)
-    results = nmap.scan_top_ports(args["target"], 1000)
 
-    os_results = nmap.nmap_os_detection(args["target"]) # MOST BE ROOT
-    
-    #temp dump json to file for analysis
-    result_dump1 = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
-    result_dump2 = json.dump(os_results, open("nmap_os_detection.json", "w"), indent=4)
-
-def large_scan(args):
-    # Scans with nmap for top ports - (ip , top_ports)
-    results = nmap.scan_top_ports(args["target"], 65389)
-
-    os_results = nmap.nmap_os_detection(args["target"]) # MOST BE ROOT
-    
-    #temp dump json to file for analysis
-    result_dump1 = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
-    result_dump2 = json.dump(os_results, open("nmap_os_detection.json", "w"), indent=4)
 
 
 def read_args() -> Dict[str, str]:

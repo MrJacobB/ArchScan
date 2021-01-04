@@ -71,7 +71,11 @@ def read_args() -> Dict[str, str]:
     args = parser.parse_args()
     if args.small == False and args.medium == False and args.large == False:
         # Dumb way of making a default - possible TODO: parser defaults?
-        size.set_defaults(medium=True)
+        # size.set_defaults(medium=True)
+        
+        #for debug:
+        size.set_defaults(small=True)
+        
         args = parser.parse_args()
 
     if args.target:

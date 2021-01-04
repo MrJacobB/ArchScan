@@ -1,3 +1,3 @@
-# ArchScan
+# NemesisScan
 ## Final Thesis project and a work in progress
-TBD
+The scanner that finds a common nemesis, vulnerabilities.

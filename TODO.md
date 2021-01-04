@@ -1,4 +1,5 @@
 
+    # --osscan-limit for medium and perhaps full osscan for large? arguments for os_detection?
 
 #TODO: Start/End time, Total run time
 #TODO:Split list into json/xml/object?

@@ -38,20 +38,20 @@ def nmap_scan(args):
 
     # Scans with nmap for top ports - (ip , top_ports)
     results = nmap.scan_top_ports(args["target"], scanport)
-
-    os_results = nmap.nmap_os_detection(args["target"]) # MOST BE ROOT
-    
-    service_results = nmap.nmap_version_detection(args["target"]) # MOST BE ROOT
-
-    list_results = nmap.nmap_list_scan(args["target"])
-
     #temp dump json to file for analysis
     result_dump1 = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
+
+    os_results = nmap.nmap_os_detection(args["target"]) # MOST BE ROOT
+    #temp dump json to file for analysis
     result_dump2 = json.dump(os_results, open("nmap_os_detection.json", "w"), indent=4)
+    
+    service_results = nmap.nmap_version_detection(args["target"]) # MOST BE ROOT
+    #temp dump json to file for analysis
     result_dump3 = json.dump(service_results, open("nmap_version_detection.json", "w"), indent=4)
+
+    list_results = nmap.nmap_list_scan(args["target"])
+    #temp dump json to file for analysis
     result_dump4 = json.dump(list_results, open("nmap_list.json", "w"), indent=4)
-
-
 
 
 def read_args() -> Dict[str, str]:
@@ -84,8 +84,6 @@ def read_args() -> Dict[str, str]:
             my_dict = {"size": 3, "target": args.target}
     elif args.target_list:
         # If target_list is true, deterimine scan size
-        # TODO:
-        # Split list into json/xml/object?
         if args.small:
             my_dict = {"size": 1, "target": args.target_list}
         elif args.medium:
@@ -96,33 +94,6 @@ def read_args() -> Dict[str, str]:
     # return dictionary
     return my_dict
 
-
-def scan():
-    return {}
-    # TODO
-    # Enum:
-
-    # nmap
-
-    # nabuu
-
-    # TODO
-    # Service detection:
-
-    # nmap --script
-
-    # nuclei
-
-    # TODO
-    # Web analyzing:
-
-    # subfinder
-
-    # nslookup
-
-    # webanalyzer
-
-    # gohead
 
 
 if __name__ == "__main__":

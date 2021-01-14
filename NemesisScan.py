@@ -14,6 +14,9 @@ from typing import Dict
 nmap = nmap3.Nmap()
 
 
+#requirements:
+# Vulners + vulscan script for nmap
+
 def main():
     args: Dict[str, str] = read_args()
 
@@ -52,6 +55,10 @@ def nmap_scan(args):
     list_results = nmap.nmap_list_scan(args["target"])
     #temp dump json to file for analysis
     result_dump4 = json.dump(list_results, open("nmap_list.json", "w"), indent=4)
+
+    results = nmap.scan_top_ports(args["target"], scanport, args="-sV --script=vulscan/vulscan.nse,vulners.nse")
+    result_dump = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
+
 
 
 def read_args() -> Dict[str, str]:

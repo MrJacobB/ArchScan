@@ -39,23 +39,6 @@ def nmap_scan(args):
         scanport=65389
         print("Large scan")
 
-    # Scans with nmap for top ports - (ip , top_ports)
-    results = nmap.scan_top_ports(args["target"], scanport)
-    #temp dump json to file for analysis
-    result_dump1 = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
-
-    os_results = nmap.nmap_os_detection(args["target"]) # MOST BE ROOT
-    #temp dump json to file for analysis
-    result_dump2 = json.dump(os_results, open("nmap_os_detection.json", "w"), indent=4)
-    
-    service_results = nmap.nmap_version_detection(args["target"]) # MOST BE ROOT
-    #temp dump json to file for analysis
-    result_dump3 = json.dump(service_results, open("nmap_version_detection.json", "w"), indent=4)
-
-    list_results = nmap.nmap_list_scan(args["target"])
-    #temp dump json to file for analysis
-    result_dump4 = json.dump(list_results, open("nmap_list.json", "w"), indent=4)
-
     results = nmap.scan_top_ports(args["target"], scanport, args="-sV --script=vulscan/vulscan.nse,vulners.nse")
     result_dump = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
 

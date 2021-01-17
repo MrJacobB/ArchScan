@@ -26,7 +26,8 @@ def main():
 
     nmap_scan(args)
 
-
+global scanport
+global result
 
 def nmap_scan(args):
     if args["size"] == 1:
@@ -39,9 +40,11 @@ def nmap_scan(args):
         scanport=65389
         print("Large scan")
 
+try:
     results = nmap.scan_top_ports(args["target"], scanport, args="-sV --script=vulscan/vulscan.nse,vulners.nse")
     result_dump = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
-
+except Exception as e:
+    print("Nmap caused an error. Make sure scripts are installed")
 
 
 def read_args() -> Dict[str, str]:

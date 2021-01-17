@@ -7,6 +7,7 @@ import json
 import argparse
 import concurrent.futures
 import nmap3
+import time
 from datetime import datetime
 from typing import Dict
 
@@ -20,9 +21,9 @@ nmap = nmap3.Nmap()
 def main():
     args: Dict[str, str] = read_args()
 
-    print(args)
-    print(args["size"])
-    print(args["target"])
+    # print(args)
+    # print(args["size"])
+    # print(args["target"])
 
     nmap_scan(args)
 
@@ -41,13 +42,19 @@ def nmap_scan(args):
         print("Large scan")
 
 try:
+    start_time = time.time()
     results = nmap.scan_top_ports(args["target"], scanport, args="-sV --script=vulscan/vulscan.nse,vulners.nse")
     result_dump = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
 except Exception as e:
     print("Nmap caused an error. Make sure scripts are installed")
+finally:
+    stop_time = time.time()
+    dt = stop_time - start_time
+    print("Scan took ", dt)
 
 
 def read_args() -> Dict[str, str]:
+    print("read_args")
     # Check for valid CLI arguments
     parser = argparse.ArgumentParser()
     target = parser.add_mutually_exclusive_group(required=True)
@@ -94,4 +101,5 @@ def read_args() -> Dict[str, str]:
 
 
 if __name__ == "__main__":
+    print("Scan started:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     main()

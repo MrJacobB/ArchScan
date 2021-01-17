@@ -41,20 +41,19 @@ def nmap_scan(args):
         scanport=65389
         print("Large scan")
 
-try:
-    start_time = time.time()
-    results = nmap.scan_top_ports(args["target"], scanport, args="-sV --script=vulscan/vulscan.nse,vulners.nse")
-    result_dump = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
-except Exception as e:
-    print("Nmap caused an error. Make sure scripts are installed")
-finally:
-    stop_time = time.time()
-    dt = stop_time - start_time
-    print("Scan took ", dt)
+    try:
+        start_time = time.time()
+        results = nmap.scan_top_ports(args["target"], scanport, args="-sV --script=vulscan/vulscan.nse,vulners.nse")
+        result_dump = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
+    except Exception as e:
+        print("Nmap caused an error. Make sure scripts are installed")
+    finally:
+        stop_time = time.time()
+        dt = stop_time - start_time
+        print("Scan took ", dt)
 
 
 def read_args() -> Dict[str, str]:
-    print("read_args")
     # Check for valid CLI arguments
     parser = argparse.ArgumentParser()
     target = parser.add_mutually_exclusive_group(required=True)

@@ -29,6 +29,7 @@ def main():
 
 global scanport
 global result
+global outputFile
 
 def nmap_scan(args):
     if args["size"] == 1:
@@ -40,13 +41,18 @@ def nmap_scan(args):
     elif args["size"] == 3:
         scanport=65389
         print("Large scan")
-
+    
+    outputFile = "nmap_top_ports.json"
+    
     try:
         start_time = time.time()
         results = nmap.scan_top_ports(args["target"], scanport, args="-sV --script=vulscan/vulscan.nse,vulners.nse")
-        result_dump = json.dump(results, open("nmap_top_ports.json", "w"), indent=4)
+        json.dump(results, open(outputFile, "w"), indent=4)
+        print("Scan done, wrote result to", outputFile)
     except Exception as e:
         print("Nmap caused an error. Make sure scripts are installed")
+        if debug:
+            print(e)
     finally:
         stop_time = time.time()
         dt = stop_time - start_time
@@ -54,6 +60,7 @@ def nmap_scan(args):
 
 
 def read_args() -> Dict[str, str]:
+    global debug
     # Check for valid CLI arguments
     parser = argparse.ArgumentParser()
     target = parser.add_mutually_exclusive_group(required=True)
@@ -67,6 +74,7 @@ def read_args() -> Dict[str, str]:
         "-m", "--medium", action="store_true", help="Medium scale scanning"
     )
     size.add_argument("-l", "--large", action="store_true", help="Large scale scanning")
+    parser.add_argument("--debug", action="store_true", help="Run as Verbose in debug mode")
     args = parser.parse_args()
     if args.small == False and args.medium == False and args.large == False:
         # Dumb way of making a default - possible TODO: parser defaults?
@@ -93,7 +101,10 @@ def read_args() -> Dict[str, str]:
             my_dict = {"size": 2, "target": args.target_list}
         elif args.large:
             my_dict = {"size": 3, "target": args.target_list}
-
+    if args.debug:
+        debug = True
+    else:
+        debug = False
     # return dictionary
     return my_dict
 

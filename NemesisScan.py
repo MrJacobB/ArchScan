@@ -11,27 +11,24 @@ import time
 from datetime import datetime
 from typing import Dict
 
-#Instantiates nmap
+# Instantiates nmap
 nmap = nmap3.Nmap()
+outputFile = "nemesis_out.json"
+# nmap_command = "-sV --script=vulscan/vulscan.nse,vulners.nse"
+nmap_command = "-sV --script=vulners.nse"
 
-
-#requirements:
+# requirements:
+# Nmap
 # Vulners + vulscan script for nmap
 
 def main():
     args: Dict[str, str] = read_args()
 
-    # print(args)
-    # print(args["size"])
-    # print(args["target"])
-
     nmap_scan(args)
 
-global scanport
-global result
-global outputFile
 
 def nmap_scan(args):
+    global result
     if args["size"] == 1:
         print("Small scan")
         scanport=10
@@ -42,22 +39,45 @@ def nmap_scan(args):
         scanport=65389
         print("Large scan")
     
-    outputFile = "nmap_top_ports.json"
     
     try:
+        # Try to run nmap with serice detection and scripts
         start_time = time.time()
-        results = nmap.scan_top_ports(args["target"], scanport, args="-sV --script=vulscan/vulscan.nse,vulners.nse")
-        json.dump(results, open(outputFile, "w"), indent=4)
+        result = nmap.scan_top_ports(args["target"], scanport, args=nmap_command)
         print("Scan done, wrote result to", outputFile)
+        output()
     except Exception as e:
         print("Nmap caused an error. Make sure scripts are installed")
         if debug:
             print(e)
+            print("This is likely the fault of being run on windows")
+
+        try:
+            # Scripts and service detection failed - trying to run regular nmap port scan
+            print("Attempting to run without scripts and service detection")
+            start_time = time.time()
+            result = nmap.scan_top_ports(args["target"], scanport)
+            print("Scan done, No scripts, wrote result to", outputFile)
+            output()
+        except Exception as e:
+            print("Nmap could not be run. Make sure it is installed")
+            if debug:
+                print(e)
+                print("This is likely the fault of being run on windows")
     finally:
         stop_time = time.time()
         dt = stop_time - start_time
         print("Scan took ", dt)
+    
 
+
+
+
+def output():
+    # Output to file
+    json.dump(result, open(outputFile, "w"), indent=4)
+    #TODO: Extended output mode for one host per dir
+    #TODO: Argument option for single json output file
 
 def read_args() -> Dict[str, str]:
     global debug
@@ -80,7 +100,7 @@ def read_args() -> Dict[str, str]:
         # Dumb way of making a default - possible TODO: parser defaults?
         # size.set_defaults(medium=True)
         
-        #for debug:
+        # for debug:
         size.set_defaults(small=True)
         
         args = parser.parse_args()

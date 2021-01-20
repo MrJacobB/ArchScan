@@ -68,9 +68,8 @@ def nmap_scan(args):
         # check for http or https to start webscan
         for item in result[args["target"]]['ports']:
             if item['service']['name'] == 'http':
-                pass
                 out = webscan(args)
-                item['scripts']['webanalyze'] = json.loads(out)
+                item['scripts']['webanalyze'] = out
             elif  item['service']['name'] == 'https':
                 out = webscan(args)
                 print(out)

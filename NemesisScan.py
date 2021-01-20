@@ -69,7 +69,13 @@ def nmap_scan(args):
         dt = stop_time - start_time
         print("Scan took ", dt)
     
-
+def webscan(args):
+    test = result[args["target"]]['ports']
+    for item in test:
+        ser = item['service']
+        print(ser)
+        if ser['name'] == 'http' or ser['name'] == 'https':
+            print("yes")
 
 
 

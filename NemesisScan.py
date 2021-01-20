@@ -67,10 +67,12 @@ def nmap_scan(args):
     else:
         # check for http or https to start webscan
         for item in result[args["target"]]['ports']:
-            if item['service']['name'] == 'http' or item['service']['name'] == 'https':
-                webs = True
-        if webs:
-            webscan(args)
+            if item['service']['name'] == 'http':
+                out = webscan(args)
+                item['scripts'] = out
+            elif  item['service']['name'] == 'https':
+                out = webscan(args)
+                item['scripts'] = out
         print("outputting")
         output()
     finally:
@@ -87,6 +89,7 @@ def webscan(args):
         Webanalyzer = subprocess.run(["webanalyze","-host",args["target"],"-crawl","4","-output","json"], stdout=subprocess.PIPE, text=True, check=True)
         webout = Webanalyzer.stdout
         print(webout)
+        return webout
     except Exception as e:
         print("Webanalyze failed to run")
         if debug:

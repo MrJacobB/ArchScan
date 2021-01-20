@@ -1,12 +1,14 @@
 
     # --osscan-limit for medium and perhaps full osscan for large? arguments for os_detection?
 
-#TODO: Start/End time, Total run time
-#TODO:Split list into json/xml/object?
+Start/End time, Total run time
+Split list into json/xml/object?
 
-#TODO: nmap scripts? vulners + vulscan
-#TODO: nmap timing and performance?
+nmap scripts? vulners + vulscan
+nmap timing and performance?
 reporting module
+argument for output file
+
 #notes:
     # TODO
     # Enum:

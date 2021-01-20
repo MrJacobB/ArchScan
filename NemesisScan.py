@@ -16,6 +16,7 @@ nmap = nmap3.Nmap()
 outputFile = "nemesis_out.json"
 # nmap_command = "-sV --script=vulscan/vulscan.nse,vulners.nse"
 nmap_command = "-sV --script=vulners.nse"
+debug = False
 
 # requirements:
 # Nmap
@@ -44,8 +45,6 @@ def nmap_scan(args):
         # Try to run nmap with serice detection and scripts
         start_time = time.time()
         result = nmap.scan_top_ports(args["target"], scanport, args=nmap_command)
-        print("Scan done, wrote result to", outputFile)
-        output()
     except Exception as e:
         print("Nmap caused an error. Make sure scripts are installed")
         if debug:
@@ -57,25 +56,44 @@ def nmap_scan(args):
             print("Attempting to run without scripts and service detection")
             start_time = time.time()
             result = nmap.scan_top_ports(args["target"], scanport)
-            print("Scan done, No scripts, wrote result to", outputFile)
-            output()
         except Exception as e:
             print("Nmap could not be run. Make sure it is installed")
             if debug:
                 print(e)
                 print("This is likely the fault of being run on windows")
+        else:
+            print("Scan done, No scripts, wrote result to", outputFile)
+            output()
+    else:
+        # check for http or https to start webscan
+        for item in result[args["target"]]['ports']:
+            if item['service']['name'] == 'http' or item['service']['name'] == 'https':
+                webs = True
+        if webs:
+            webscan(args)
+        print("outputting")
+        output()
     finally:
         stop_time = time.time()
         dt = stop_time - start_time
         print("Scan took ", dt)
     
+    
+    
 def webscan(args):
-    test = result[args["target"]]['ports']
-    for item in test:
-        ser = item['service']
-        print(ser)
-        if ser['name'] == 'http' or ser['name'] == 'https':
-            print("yes")
+    #TODO: GoHead/Webanalyzer/subfinder or what ever tool would work here
+    print("starting web")
+    try:
+        Webanalyzer = subprocess.run(["webanalyze","-host",args["target"],"-crawl","4","-output","json"], stdout=subprocess.PIPE, text=True, check=True)
+        webout = Webanalyzer.stdout
+        print(webout)
+    except Exception as e:
+        print("Webanalyze failed to run")
+        if debug:
+            print(e)
+            print("Likely caused by incorrect Webanalyze installation")
+    print("ending web")
+
 
 
 
@@ -127,10 +145,10 @@ def read_args() -> Dict[str, str]:
             my_dict = {"size": 2, "target": args.target_list}
         elif args.large:
             my_dict = {"size": 3, "target": args.target_list}
+    
     if args.debug:
         debug = True
-    else:
-        debug = False
+
     # return dictionary
     return my_dict
 

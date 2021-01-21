@@ -1,36 +1,15 @@
+### Todo list
 
-    # --osscan-limit for medium and perhaps full osscan for large? arguments for os_detection?
+- [X] Start/End time, Total run time
+- [x] Nmap scripts? vulners + vulscan
+- [ ] Nmap scan limits for sizes
+- [ ] Reporting module
+- [ ] Argument for output file
+- [ ] Nabuu
+- [ ] Nuclei templates
+- [x] Webanalyzer
+- [ ] Subfinder
+- [ ] gohead
 
-Start/End time, Total run time
-Split list into json/xml/object?
 
-nmap scripts? vulners + vulscan
-nmap timing and performance?
-reporting module
-argument for output file
 
-#notes:
-    # TODO
-    # Enum:
-
-    # nmap
-
-    # nabuu
-
-    # TODO
-    # Service exploration:
-
-    # nmap --script
-
-    # nuclei
-
-    # TODO
-    # Web analyzing:
-
-    # subfinder
-
-    # nslookup
-
-    # webanalyzer
-
-    # gohead

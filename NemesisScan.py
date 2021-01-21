@@ -68,14 +68,31 @@ def nmap_scan(args):
         # check for http or https to start webscan
         for item in result[args["target"]]['ports']:
             if item['service']['name'] == 'http':
-                out = webscan(args)
-                item['scripts']['webanalyze'] = out
+                print("http")
+                tttt = webscan(args)
+                tttt=tttt.replace("}\n","}")
+                dec = json.JSONDecoder()
+                pos = 0
+                out = []
+                while not pos == len(str(tttt)):
+                    j, json_len = dec.raw_decode(str(tttt)[pos:])
+                    pos += json_len
+                    out.append(j)
+                item['webanalyzer'] = out
+                print("worked")
             elif  item['service']['name'] == 'https':
-                out = webscan(args)
-                print(out)
-                out2 = json.loads(out)
-                print(out2)
-                #item['scripts']['webanalyze'] = json.loads(out)
+                print("https")
+                tttt = webscan(args)
+                tttt=tttt.replace("}\n","}")
+                dec = json.JSONDecoder()
+                pos = 0
+                out = []
+                while not pos == len(str(tttt)):
+                    j, json_len = dec.raw_decode(str(tttt)[pos:])
+                    pos += json_len
+                    out.append(j)
+                item['webanalyzer'] = out
+                print("worked")
         print("outputting")
         output()
     finally:
@@ -89,10 +106,10 @@ def webscan(args):
     #TODO: GoHead/Webanalyzer/subfinder or what ever tool would work here
     print("starting web")
     try:
-        Webanalyzer = subprocess.run(["webanalyze","-host",args["target"],"-crawl","4","-output","json"], stdout=subprocess.PIPE, text=True, check=True)
-        webout = Webanalyzer.stdout
-        print(webout)
-        return webout
+        Webanalyzer = subprocess.Popen(["webanalyze","-host",args["target"],"-crawl","4","-output","json"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        webout, err = Webanalyzer.communicate()
+        Webanalyzer.wait()
+        return webout.decode("utf8").strip()
     except Exception as e:
         print("Webanalyze failed to run")
         if debug:

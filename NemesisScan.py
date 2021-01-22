@@ -68,7 +68,6 @@ def nmap_scan(args):
         # check for http or https to start webscan
         for item in result[args["target"]]['ports']:
             if item['service']['name'] == 'http':
-                print("http")
                 tttt = webscan(args)
                 tttt=tttt.replace("}\n","}")
                 dec = json.JSONDecoder()
@@ -79,9 +78,7 @@ def nmap_scan(args):
                     pos += json_len
                     out.append(j)
                 item['webanalyzer'] = out
-                print("worked")
             elif  item['service']['name'] == 'https':
-                print("https")
                 tttt = webscan(args)
                 tttt=tttt.replace("}\n","}")
                 dec = json.JSONDecoder()
@@ -92,8 +89,6 @@ def nmap_scan(args):
                     pos += json_len
                     out.append(j)
                 item['webanalyzer'] = out
-                print("worked")
-        print("outputting")
         output()
     finally:
         stop_time = time.time()
@@ -104,7 +99,6 @@ def nmap_scan(args):
     
 def webscan(args):
     #TODO: GoHead/Webanalyzer/subfinder or what ever tool would work here
-    print("starting web")
     try:
         Webanalyzer = subprocess.Popen(["webanalyze","-host",args["target"],"-crawl","4","-output","json"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         webout, err = Webanalyzer.communicate()
@@ -115,7 +109,6 @@ def webscan(args):
         if debug:
             print(e)
             print("Likely caused by incorrect Webanalyze installation")
-    print("ending web")
 
 
 
@@ -123,6 +116,7 @@ def webscan(args):
 def output():
     # Output to file
     json.dump(result, open(outputFile, "w"), indent=4)
+    print("outputting to",outputFile)
     #TODO: Extended output mode for one host per dir
     #TODO: Argument option for single json output file
 
